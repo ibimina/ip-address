@@ -1,11 +1,23 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { Inter } from '@next/font/google'
+
 import styles from '@/styles/Home.module.css'
+import { useState } from 'react'
 
-const inter = Inter({ subsets: ['latin'] })
-
+interface IpAddress {
+  ip: string,
+  location: {
+    region: string
+    postalCode: string
+    city: string
+    lat: number
+    lng: number
+    timezone: string
+  },
+  isp: string
+}
 export default function Home() {
+  const [ipaddress,setIpaddress] = useState("")
   return (
     <>
       <Head>
@@ -14,15 +26,15 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header>
-        <h1>IP Address Tracker</h1>
-        <form>
-          <input type="number" name="ipaddress" placeholder='search for any ip address or domain' />
-          <input type="submit" value=">" />
+      <header className={styles.header}>
+        <h1 className={styles.title}>IP Address Tracker</h1>
+        <form className={styles.form}>
+          <input type="number" name="ipaddress" placeholder='search for any ip address or domain' className={styles.ip}/>
+          <input type="submit" value=">" className={styles.submit}/>
         </form>
       </header>
-      <main>
-        <article>
+      <main className={styles.wrap}>
+        <article className={styles.details}>
           <div>
             <p>IP ADDRESS</p>
             <p></p>
