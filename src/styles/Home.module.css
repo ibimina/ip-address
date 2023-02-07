@@ -1,0 +1,49 @@
+.header {
+  background-image: url("../../public/images/pattern-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 15em;
+}
+.form {
+  position: relative;
+  margin: 1em;
+}
+.title {
+  text-align: center;
+  padding: 0.5em 0;
+  color: #fff;
+}
+.ip {
+  display: block;
+  width: 100%;
+  padding: 1em;
+  border: none;
+  border-radius: 8px;
+}
+.submit {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: 0;
+  bottom: 0;
+  width: 10%;
+  color: #fff;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: black;
+}
+.wrap {
+  background-color: black;
+  position: relative;
+}
+.details {
+  background-color: #fff;
+  position: relative;
+  top: -3em;
+  text-align: center;
+  padding: 1em;
+  border-radius: 8px;
+  width: 80%;
+  margin: auto;
+}
