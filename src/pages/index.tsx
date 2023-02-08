@@ -1,23 +1,30 @@
 import Head from 'next/head'
-import Image from 'next/image'
-
+import dynamic from 'next/dynamic'
 import styles from '@/styles/Home.module.css'
 import { useState } from 'react'
+import useFetch from '@/useFetch'
 
-interface IpAddress {
-  ip: string,
-  location: {
-    region: string
-    postalCode: string
-    city: string
-    lat: number
-    lng: number
-    timezone: string
-  },
-  isp: string
-}
+const Map = dynamic(
+    () => import('../components/map'), // replace '@components/map' with your component's location
+    { ssr: false } // This line is important. It's what prevents server-side render
+  )
 export default function Home() {
-  const [ipaddress,setIpaddress] = useState("")
+  const [ipaddress, setIpaddress] = useState("")
+  const { details } = useFetch(ipaddress)
+
+  const validateIpaddress = (text: string) => {
+    let pattern = (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/).test(text)
+    if (pattern) {
+      setIpaddress(text)
+    }
+  }
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault()
+    const target = e.target as typeof e.target & {
+      ipaddress: { value: string };
+    };
+    validateIpaddress(target.ipaddress.value)
+  }
   return (
     <>
       <Head>
@@ -25,32 +32,36 @@ export default function Home() {
         <meta name="description" content="Get location, timezone and isp of any IP Address" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+       
       </Head>
       <header className={styles.header}>
         <h1 className={styles.title}>IP Address Tracker</h1>
-        <form className={styles.form}>
-          <input type="number" name="ipaddress" placeholder='search for any ip address or domain' className={styles.ip}/>
-          <input type="submit" value=">" className={styles.submit}/>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <input type="text" name="ipaddress" placeholder='search for any ip address or domain' className={styles.ip} />
+          <input type="submit" value="" className={styles.submit} />
         </form>
       </header>
+      <article className={styles.details}>
+        <div className={styles.box}>
+          <p className={styles.small}>IP ADDRESS</p>
+          <p className={styles.bold}>{details?.ip}</p>
+        </div>
+        <div className={styles.infocon}>
+          <p className={styles.small}>LOCATION</p>
+          <p className={styles.bold}>{details?.location?.city}{details?.location.region}{details?.location.postalCode}</p>
+        </div>  <div className={styles.infocon}>
+          <p className={styles.small}>TIMEZONE</p>
+          <p className={styles.bold}>UTC{details?.location?.timezone}</p>
+        </div>  <div className={styles.infocon}>
+          <p>ISP</p>
+          <p className={styles.bold}>{details?.isp}</p>
+        </div>
+      </article>
       <main className={styles.wrap}>
-        <article className={styles.details}>
-          <div>
-            <p>IP ADDRESS</p>
-            <p></p>
-          </div>
-          <div>
-            <p>LOCATION</p>
-            <p></p>
-          </div>  <div>
-            <p>TIMEZONE</p>
-            <p></p>
-          </div>  <div>
-            <p>ISP</p>
-            <p></p>
-          </div>
-        </article>
-        <div className="map"></div>
+        <div className={styles.map}>
+          {details !== null && <Map lat={details?.location.lat} lng={details?.location.lng} ip={details?.ip} />}
+        </div>
+      
       </main>
     </>
   )
